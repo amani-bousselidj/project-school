@@ -168,17 +168,25 @@ body {
     border: none;
 }
 
+.online-course .close-model i {
+    margin: 0;
+}
+
+.online-course .close-model,
 .search .close-model,
 .login .close-model {
     position: absolute;
-    top: 2rem;
-    right: 2rem;
+    top: 1rem;
+    right: 1rem;
     width: 3rem;
     height: 3rem;
     border-radius: 50rem;
     border: none;
     background-color: white;
     color: var(--color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .login {
@@ -270,6 +278,7 @@ body {
     border: none;
 }
 
+.online-course .overlay,
 .login .overlay {
     width: 100vw;
     height: 100vh;
@@ -598,6 +607,22 @@ body {
     font-size: 1.5rem;
     transition: 300ms ease-in;
     margin-left: 1rem;
+    position: relative;
+}
+
+.online-course .cart span {
+    position: absolute;
+    font-size: 1rem;
+    background-color: #552E8C;
+    color: white;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50rem;
+    top: -0.5rem;
+    right: -0.5rem;
 }
 
 .online-course .filter-list {
@@ -670,7 +695,11 @@ body {
 .online-course .cour h3 {
     padding: 0;
     margin: 0;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
 }
 
 .online-course .cour p {
@@ -687,6 +716,11 @@ body {
 .online-course .cour .category-course span {
     font-size: 0.8rem;
     font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    display: block;
 }
 
 .online-course .cour button {
@@ -701,6 +735,51 @@ body {
 .online-course .active {
     background-color: var(--color);
     color: white;
+}
+
+.online-course .shopping-cart-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 1rem;
+}
+
+.online-course .shopping-cart-content .cart-list {
+    padding: 0;
+}
+
+.online-course .shopping-cart-content .cart-list li {
+    list-style: none;
+    display: flex;
+    padding: 1rem 0;
+    border-bottom: 1px gainsboro solid;
+}
+
+.online-course .shopping-cart-content .cart-list img {
+    width: 8rem;
+}
+
+.online-course .shopping-cart-content .cart-list .title {
+    font-weight: 700;
+}
+
+.online-course .shopping-cart-content .cart-list i {
+    margin: 0;
+    width: fit-content;
+    height: fit-content;
+    transition: 300ms ease-in;
+}
+
+.online-course .shopping-cart-content .cart-list i:hover {
+    color: var(--color);
+}
+
+.online-course .shopping-cart-content .proceed-to-checkout {
+    background-color: var(--color);
+    color: white;
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
 }
 
 
@@ -723,3 +802,12 @@ body {
 
 
 /* --------------------------------------------------------------------FOOTER------------------------------------------------------- */
+
+@media (max-width: 576px) {
+    .filter-result {
+        flex-wrap: wrap!important;
+    }
+    .fliter {
+        width: 100%;
+    }
+}

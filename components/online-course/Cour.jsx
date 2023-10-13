@@ -1,6 +1,7 @@
 import React from 'react'
 
 export default function Cour(props) {
+   
   return (
          <div className='col-lg-4 col-md-6 col-sm-6  col-12 p-2 '>
           <div className=" cour ">
@@ -26,12 +27,16 @@ export default function Cour(props) {
              </div>
              <div className="price-cart d-flex justify-content-between align-items-center">
                 <div className='price-course'>
-                  <span>${props.price}</span>
+                  <span>{`${props.price === 'free' ? 'free' : '$'+props.price }`}</span>
                 </div>
-                <button type="button" className="btn">
-                <i class="fa-solid fa-cart-shopping"></i>
-                    Add to cart
-                 </button>
+                <button
+                     type="button"
+                     className={`btn ${props.isInCart ? 'active' : ''}`}
+                     onClick={props.addToCart}
+                     >
+                     <i className="fa-solid fa-cart-shopping"></i>
+                     {props.isInCart ? 'Remove' : 'Add to cart'}
+            </button>
              </div>
              </div>
           </div>

@@ -65,13 +65,13 @@ export default function Login(props) {
           <i className={`${props.visible} fa-regular  fa-user me-1`}></i>
           {props.title}  
           </button>
-         {loginForm && ( <div className='login-model'>
+        {loginForm && ( <div className='login-model'>
         <div className='overlay d-flex justify-content-center align-items-center'>
           {singUp ? SingUp() : 
            <div className='login-contant container'>
              <form>
                 <div className="form-outline mb-4">
-                  <input type="email" id="email" className="form-control" />
+                  <input type="email" id="email" className="form-control" name='email' />
                   <label className="form-label" for="email">Email address</label>
                 </div>
                 <div className="form-outline mb-4">
