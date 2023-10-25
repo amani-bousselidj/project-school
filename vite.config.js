@@ -5,7 +5,9 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
     plugins: [react()],
     build: {
-        outDir: 'dist',
-    },
+        outDir: 'build',    },
+        define: {
+            'import.meta.env.VITE_HOST': JSON.stringify(process.env.VITE_HOST),
+          },
     base: "/project-school/"
 })

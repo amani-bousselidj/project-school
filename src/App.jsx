@@ -11,10 +11,10 @@ function App() {
    
      <Router>
       <div>
-      <Header />
+        <Header />
         <Switch>
-          <Route path="/project-school/online_course" component={OnlineCourse} />
-          <Route exact path="/project-school/"  component={Home} />
+            <Route path="/project-school/online_course" component={OnlineCourse} />
+            <Route exact path="/project-school/"  component={Home} />
         </Switch>
       </div>
       <Footer />
