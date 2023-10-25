@@ -6,8 +6,8 @@ export default defineConfig({
     plugins: [react()],
     build: {
         outDir: 'build',    },
-        define: {
-            'import.meta.env.VITE_HOST': JSON.stringify(process.env.VITE_HOST),
-          },
+        // define: {
+        //     'import.meta.env.VITE_HOST': JSON.stringify(process.env.VITE_HOST),
+        //   },
     base: "/project-school/"
 })
