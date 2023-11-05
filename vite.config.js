@@ -9,4 +9,5 @@ export default defineConfig({
         // define: {
         //     'import.meta.env.VITE_HOST': JSON.stringify(process.env.VITE_HOST),
         //   },
+    // base: "/project-school/"
 })
