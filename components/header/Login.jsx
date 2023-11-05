@@ -139,7 +139,7 @@ console.log('User:', user);
         break;
       
     }
-    const response = await fetch('https://aml-school.onrender.com/register/', {
+    const response = await fetch('http://aml-school.com/api/register/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -166,7 +166,7 @@ console.log('User:', user);
     const password = document.getElementById('password').value;
 
     try {
-      const response = await fetch('https://aml-school.onrender.com/login/', {
+      const response = await fetch('http://aml-school.com/api/login/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
