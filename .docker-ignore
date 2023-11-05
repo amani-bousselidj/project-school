@@ -1,0 +1,4 @@
+.netlify/
+build/
+dist/
+node_modules/
