@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-import { useNavbarState } from './navbarState';
+import { useNavbarState } from './NavbarState';
 export const Navigation = () => {
     const navbar = useNavbarState();
   return (
