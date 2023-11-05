@@ -1,6 +1,6 @@
 import React  ,{useState} from 'react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-import { useNavbarState } from './NavbarState';
+import { useNavbarState } from './navbarState';
 import Logo from './Logo';
 export default function SideBar() {
     const navbar = useNavbarState();
