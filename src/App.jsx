@@ -13,7 +13,7 @@ function App() {
       <div>
         <Header />
         <Switch>
-            <Route path="/online_course" component={OnlineCourse} />
+            <Route path="/project-school/online_course" component={OnlineCourse} />
             <Route exact path=""  component={Home} />
         </Switch>
       </div>
