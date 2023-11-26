@@ -22,6 +22,7 @@ export default function Login(props) {
     const fetchCountries = async () => {
       try {
         const response = await fetch(`${apiUrl}/api/countries/`);
+        console.log(response);  // Log the entire response
         if (response.ok) {
           const data = await response.json();
           setCountries(data);
