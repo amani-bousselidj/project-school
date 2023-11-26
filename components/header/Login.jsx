@@ -8,7 +8,7 @@ export default function Login(props) {
   const [registrationError, setRegistrationError] = useState(null);
   const [countries, setCountries] = useState([]);
   const apiUrl = import.meta.env.VITE_HOST;
-
+  console.log(apiUrl);  // Log apiUrl to the console
   const [showAlert, setShowAlert] = useState(false);
   const [alertTitle, setAlertTitle] = useState('');
   const [alertMessage, setAlertMessage] = useState('');
