@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 export default function Logo() {
-  const apiUrl = import.meta.env.VITE_HOST;
+  const apiUrl = import.meta.env.VITE_HOST|| "https://aml-school.com";
 
   const [logoUrl, setLogoUrl] = useState('');
 

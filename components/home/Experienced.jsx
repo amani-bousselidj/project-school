@@ -3,7 +3,7 @@ import Staff from './Staff';
 
 export default function Experienced() {
   const [teachers, setTeachers] = useState([]);
-  const apiUrl = import.meta.env.VITE_HOST;
+  const apiUrl = import.meta.env.VITE_HOST || "https://aml-school.com";
 
   useEffect(() => {
     const fetchTeachers = async () => {

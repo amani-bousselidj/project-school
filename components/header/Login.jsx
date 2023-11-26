@@ -7,7 +7,7 @@ export default function Login(props) {
   const [loginError, setLoginError] = useState(null);
   const [registrationError, setRegistrationError] = useState(null);
   const [countries, setCountries] = useState([]);
-  const apiUrl = import.meta.env.VITE_HOST;
+  const apiUrl = import.meta.env.VITE_HOST || "https://aml-school.com";
   console.log(apiUrl);  // Log apiUrl to the console
   const [showAlert, setShowAlert] = useState(false);
   const [alertTitle, setAlertTitle] = useState('');
