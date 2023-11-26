@@ -85,7 +85,7 @@ export default function Login(props) {
         },
         body: JSON.stringify({ username, user, email, password, role_name, country_id: countryId }),
       });
-
+      console.log(response);  // Log the entire response
       if (response.ok) {
         const data = await response.json();
         console.log(data);
