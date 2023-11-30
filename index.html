@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" id="favicon" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>School</title>
@@ -20,6 +20,24 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://kit.fontawesome.com/d14523d182.js" crossorigin="anonymous"></script>
 
+    <script>
+        const apiUrl = "http://127.0.0.1:8000/";
+
+        // Fetch general settings
+        fetch(`${apiUrl}/api/general-settings/`)
+            .then(response => response.json())
+            .then(data => {
+                // Update the document title with the fetched site name
+                document.title = data.site_name || "Default Title";
+
+                // Update the favicon with the fetched logo
+                const favicon = document.getElementById('favicon');
+                favicon.href = data.logo_url || '/default-logo.png'; 
+            })
+            .catch(error => {
+                console.error('Error fetching general settings:', error);
+            });
+    </script>
 </body>
 
 </html>
