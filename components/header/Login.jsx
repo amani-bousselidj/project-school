@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import FacebookLogin from 'react-facebook-login';
 
 export default function Login(props) {
   const [singUp, setSingUp] = useState(false);
@@ -140,6 +141,7 @@ export default function Login(props) {
   };
   
   function SignUpForm() {
+
     return (
       <div className='login-contant container'>
         <form onSubmit={handleSignUp}>
@@ -181,6 +183,7 @@ export default function Login(props) {
           </div>
           <button type="submit" className="btn login-submit btn-primary btn-block mb-4">Sign up</button>
         </form>
+        
         <div className="col login " onClick={toggleSingUp}>
           <a href="#!">Have you an account?</a>
         </div>
@@ -196,7 +199,11 @@ export default function Login(props) {
       document.documentElement.style.overflowY = 'scroll';
     }
   };
-
+  const responseFacebook = (response) => {
+    // Handle the Facebook login response here
+    console.log(response);
+    // You may want to send the Facebook response to your server for further processing
+  };
   return (
     <div className={`login ${props.margin}`}>
       <button type="button" className="btn" onClick={toggleLoginForm}>
@@ -230,6 +237,12 @@ export default function Login(props) {
                   </div>
                   <button type="submit" className="btn login-submit btn-primary btn-block mb-4">Sign in</button>
                 </form>
+                <FacebookLogin
+        appId="327231606751159"
+        autoLoad={false}
+        fields="name,email,picture"
+        callback={responseFacebook}
+      />
                 <div className="col singup">
                   <a href="#!" onClick={toggleSingUp}>don't have an account</a>
                 </div>
