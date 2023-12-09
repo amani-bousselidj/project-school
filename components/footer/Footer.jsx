@@ -3,7 +3,7 @@ import { MDBFooter, MDBContainer, MDBRow, MDBCol, MDBIcon } from 'mdb-react-ui-k
 import axios from 'axios';
 
 export default function Footer() {
-  const apiUrl = import.meta.env.VITE_HOST || "https://aml-school.com";
+  const apiUrl = "https://aml-school.com";
 
   const [generalSettings, setGeneralSettings] = useState({
     site_name: '',

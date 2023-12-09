@@ -8,7 +8,7 @@ export default function Logo() {
 
   useEffect(() => {
     // Make a GET request to your Django API endpoint using Axios
-    axios.get(`${apiUrl}/api/general-settings`)
+    axios.get(`${apiUrl}/api/general-settings/`)
       .then(response => {
         // Assuming the API response contains the logo URL in a field called 'logo'
         // Prepend the base URL to the logo path
