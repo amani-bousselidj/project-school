@@ -107,7 +107,7 @@ export default function Login(props) {
     e.preventDefault();
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-
+  
     try {
       const response = await fetch(`${apiUrl}/api/login/`, {
         method: 'POST',
@@ -116,11 +116,17 @@ export default function Login(props) {
         },
         body: JSON.stringify({ username, password }),
       });
-
+  
       if (response.ok) {
         const data = await response.json();
         console.log('Login successful', data);
-        // Handle successful login here, e.g., save the token to local storage
+  
+        // Redirect to the Home component after successful login
+        props.history.push('/');
+  
+        // Store the username in state or context for displaying in the navigation bar
+        // Set a state variable like setUsername and use it in the navigation bar
+        // setUsername(data.username);
       } else {
         console.error('Login failed');
         const errorResponse = await response.text();
@@ -132,7 +138,7 @@ export default function Login(props) {
       setLoginError('An error occurred during login.');
     }
   };
-
+  
   function SignUpForm() {
     return (
       <div className='login-contant container'>
@@ -204,7 +210,7 @@ export default function Login(props) {
               <div className='login-contant container'>
                 <form onSubmit={handleLogin}>
                   <div className="form-outline mb-4">
-                    <input type="email" id="username" className="form-control" name='username' />
+                    <input type="text" id="username" className="form-control" name='username' />
                     <label className="form-label" htmlFor="username">Email address</label>
                   </div>
                   <div className="form-outline mb-4">
