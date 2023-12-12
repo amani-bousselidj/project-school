@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import Avatar from '@mui/material/Avatar';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
 import FacebookLogin from 'react-facebook-login';
+import GoogleLogin from 'react-google-login';
+
+import axios from 'axios';
+
 
 export default function Login(props) {
   const [singUp, setSingUp] = useState(false);
@@ -9,12 +20,16 @@ export default function Login(props) {
   const [registrationError, setRegistrationError] = useState(null);
   const [countries, setCountries] = useState([]);
   const apiUrl ="https://aml-school.com";
-  console.log(apiUrl);  // Log apiUrl to the console
   const [showAlert, setShowAlert] = useState(false);
   const [alertTitle, setAlertTitle] = useState('');
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState('');
+  const [login , setLogin] = useState(localStorage.getItem('authToken'));
+  const [userImgUrl, setUserImgUrl] = useState('');
 
+ 
+  
+  
   const toggleSingUp = () => {
     setSingUp(!singUp);
   };
@@ -23,7 +38,7 @@ export default function Login(props) {
     const fetchCountries = async () => {
       try {
         const response = await fetch(`${apiUrl}/api/countries/`);
-        console.log(response);  // Log the entire response
+        // console.log(response);  // Log the entire response
         if (response.ok) {
           const data = await response.json();
           setCountries(data);
@@ -43,7 +58,6 @@ export default function Login(props) {
     setAlertMessage(message);
     setAlertType(type);
     setShowAlert(true);
-    // Close the sign-up form
     setSingUp(false);
   };
 
@@ -110,28 +124,26 @@ export default function Login(props) {
     const password = document.getElementById('password').value;
   
     try {
-      const response = await fetch(`${apiUrl}/api/login/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
+      const response = await axios.post(`${apiUrl}/api/login/`, { username, password });
   
-      if (response.ok) {
-        const data = await response.json();
+      if (response.status === 200) {
+        const data = response.data;
         console.log('Login successful', data);
   
-        // Redirect to the Home component after successful login
-        props.history.push('/');
+        // Save user data and profile picture URL in localStorage
+        localStorage.setItem('authToken', data.token);
+        localStorage.setItem('userData', JSON.stringify(data));
+        
+        // Construct the full URL for the profile picture
+        const fullImageUrl = apiUrl + data.profile_picture;
+        localStorage.setItem('userImgUrl', fullImageUrl);
   
-        // Store the username in state or context for displaying in the navigation bar
-        // Set a state variable like setUsername and use it in the navigation bar
-        // setUsername(data.username);
+        setLogin(localStorage.getItem('authToken'));
+        setUserImgUrl(fullImageUrl);
+  
+        toggleLoginForm();
       } else {
         console.error('Login failed');
-        const errorResponse = await response.text();
-        console.log('Error Response:', errorResponse);
         setLoginError('Invalid credentials. Please try again.');
       }
     } catch (error) {
@@ -140,8 +152,58 @@ export default function Login(props) {
     }
   };
   
-  function SignUpForm() {
+  
+  useEffect(() => {
+    // Check if the user is logged in by retrieving the authToken from localStorage
+    const authToken = localStorage.getItem('authToken');
+  
+    if (authToken) {
+      // User is logged in, retrieve user data and profile picture URL from localStorage
+      const userData = JSON.parse(localStorage.getItem('userData'));
+      const userImgUrl = localStorage.getItem('userImgUrl');
+  
+      // Set the user data and profile picture URL in the component state
+      setLogin(authToken);
+      setUserImgUrl(userImgUrl);
+    }
+  
+    // Fetch countries (your existing code for fetching countries)
+    const fetchCountries = async () => {
+      try {
+        const response = await fetch(`${apiUrl}/api/countries/`);
+        if (response.ok) {
+          const data = await response.json();
+          setCountries(data);
+        } else {
+          console.error('Failed to fetch countries');
+        }
+      } catch (error) {
+        console.error('An error occurred while fetching countries', error);
+      }
+    };
+  
+    // Call the fetchCountries function
+    fetchCountries();
+  }, [apiUrl]);
+  const responseFacebook = async (response) => {
+    try {
+      const { accessToken, userID } = response;
+      const res = await axios.post(`${apiUrl}/api/facebook-login/`, { access_token: accessToken, user_id: userID });
 
+      if (res.status === 200) {
+        const data = res.data;
+        handleSocialLogin(data);
+      } else {
+        console.error('Facebook login failed');
+        setLoginError('Facebook login failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Facebook login failed', error);
+      setLoginError('An error occurred during Facebook login.');
+    }
+  };
+  
+  function SignUpForm() {
     return (
       <div className='login-contant container'>
         <form onSubmit={handleSignUp}>
@@ -183,10 +245,17 @@ export default function Login(props) {
           </div>
           <button type="submit" className="btn login-submit btn-primary btn-block mb-4">Sign up</button>
         </form>
-        
+
         <div className="col login " onClick={toggleSingUp}>
           <a href="#!">Have you an account?</a>
         </div>
+        <FacebookLogin
+                  appId="327231606751159"
+                  autoLoad={false}
+                  fields="name,email,picture"
+                  callback={responseFacebook}
+                  icon={<i className="fab fa-facebook-square"></i>}
+                />
       </div>
     );
   }
@@ -199,71 +268,115 @@ export default function Login(props) {
       document.documentElement.style.overflowY = 'scroll';
     }
   };
-  const responseFacebook = (response) => {
-    // Handle the Facebook login response here
-    console.log(response);
-    // You may want to send the Facebook response to your server for further processing
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    setLogin(null);
+    window.location.reload();
+  };
+  
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+
+  };
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+
   };
   return (
     <div className={`login ${props.margin}`}>
-      <button type="button" className="btn" onClick={toggleLoginForm}>
-        <i className={`${props.visible} fa-regular fa-user me-1`}></i>
-        {props.title}
-      </button>
-      {loginForm && (
-        <div className='login-model'>
-          <div className='overlay d-flex justify-content-center align-items-center'>
-            {singUp ? <SignUpForm /> :
-              <div className='login-contant container'>
-                <form onSubmit={handleLogin}>
-                  <div className="form-outline mb-4">
-                    <input type="text" id="username" className="form-control" name='username' />
-                    <label className="form-label" htmlFor="username">Email address</label>
-                  </div>
-                  <div className="form-outline mb-4">
-                    <input type="password" id="password" className="form-control" />
-                    <label className="form-label" htmlFor="password">Password</label>
-                  </div>
-                  <div className="d-flex justify-content-center flex-wrap  mb-4">
-                    <div className="col d-flex justify-content-center">
-                      <div className="form-check">
-                        <input className="form-check-input" type="checkbox" value="" id="rememberme" />
-                        <label className="form-check-label" htmlFor="rememberme"> Remember me </label>
-                      </div>
-                    </div>
-                    <div className="col forgot">
-                      <a href="#!">Forgot password?</a>
-                    </div>
-                  </div>
-                  <button type="submit" className="btn login-submit btn-primary btn-block mb-4">Sign in</button>
-                </form>
-                <FacebookLogin
-        appId="327231606751159"
-        autoLoad={false}
-        fields="name,email,picture"
-        callback={responseFacebook}
-      />
-                <div className="col singup">
-                  <a href="#!" onClick={toggleSingUp}>don't have an account</a>
+       {props.header && login ? (
+        // If user is logged in, render user menu
+        <Box sx={{ flexGrow: 0 }}>
+          <Tooltip title="Open settings">
+            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+            {userImgUrl && <Avatar alt="Remy Sharp" src={userImgUrl}  />}
+            </IconButton>
+          </Tooltip>
+          <Menu
+            sx={{ mt: '45px' }}
+            id="menu-appbar"
+            anchorEl={anchorElUser}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            open={Boolean(anchorElUser)}
+            onClose={handleCloseUserMenu}
+          >
+            <MenuItem onClick={handleCloseUserMenu}>
+              <Typography textAlign="center">Profile</Typography>
+            </MenuItem>
+            <MenuItem onClick={handleCloseUserMenu}>
+              <Typography textAlign="center">Dashboard</Typography>
+            </MenuItem>
+            <MenuItem onClick={handleCloseUserMenu}>
+              <Typography textAlign="center" onClick={handleLogout}>Logout</Typography>
+            </MenuItem>
+          </Menu>
+        </Box>
+      ) : (
+        <>
+          <button type="button" className="btn" onClick={toggleLoginForm}>
+            <i className={`${props.visible} fa-regular fa-user me-1`}></i>
+            {props.title}
+          </button>
+          {loginForm && (
+  <div className='login-model'>
+    <div className='overlay d-flex justify-content-center align-items-center'>
+      {singUp ? <SignUpForm /> :
+        <div className='login-contant container'>
+          <form onSubmit={handleLogin}>
+            <div className="form-outline mb-4">
+              <input type="text" id="username" className="form-control" name='username' />
+              <label className="form-label" htmlFor="username">Email address</label>
+            </div>
+            <div className="form-outline mb-4">
+              <input type="password" id="password" className="form-control" />
+              <label className="form-label" htmlFor="password">Password</label>
+            </div>
+            <div className="d-flex justify-content-center flex-wrap  mb-4">
+              <div className="col d-flex justify-content-center">
+                <div className="form-check">
+                  <input className="form-check-input" type="checkbox" value="" id="rememberme" />
+                  <label className="form-check-label" htmlFor="rememberme"> Remember me </label>
                 </div>
               </div>
-            }
-            <button className='close-model' onClick={toggleLoginForm}>
-              <i className='fas fa-close'></i>
-            </button>
+              <div className="col forgot">
+                <a href="#!">Forgot password?</a>
+              </div>
+            </div>
+            <button type="submit" className="btn login-submit btn-primary btn-block mb-4">Sign in</button>
+          </form>
+          <div className="col singup">
+            <a href="#!" onClick={toggleSingUp}>don't have an account</a>
           </div>
         </div>
-      )}
-      {showAlert && (
-        <SweetAlert
-          title={alertTitle}
-          onConfirm={() => setShowAlert(false)}
-          timeout={10000}
-          type={alertType}
-        >
-          {alertMessage}
-        </SweetAlert>
+      }
+      <button className='close-model' onClick={toggleLoginForm}>
+        <i className='fas fa-close'></i>
+      </button>
+    </div>
+  </div>
+)}
+{showAlert && (
+  <SweetAlert
+    title={alertTitle}
+    onConfirm={() => setShowAlert(false)}
+    timeout={10000}
+    type={alertType}
+  >
+    {alertMessage}
+  </SweetAlert>
+)}
+        </>
       )}
     </div>
   );
+  
 }
