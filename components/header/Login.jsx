@@ -9,7 +9,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
-
+import Facebook from '/components/facebook';
 import axios from 'axios';
 
 
@@ -26,6 +26,8 @@ export default function Login(props) {
   const [alertType, setAlertType] = useState('');
   const [login , setLogin] = useState(localStorage.getItem('authToken'));
   const [userImgUrl, setUserImgUrl] = useState('');
+  const [userName, setUserName] = useState('');
+
 
  
   
@@ -129,19 +131,26 @@ export default function Login(props) {
       if (response.status === 200) {
         const data = response.data;
         console.log('Login successful', data);
-  
-        // Save user data and profile picture URL in localStorage
         localStorage.setItem('authToken', data.token);
         localStorage.setItem('userData', JSON.stringify(data));
         
         // Construct the full URL for the profile picture
         const fullImageUrl = apiUrl + data.profile_picture;
+        const fullUserName =  data.username;
         localStorage.setItem('userImgUrl', fullImageUrl);
+        localStorage.setItem('userName', fullUserName);
   
         setLogin(localStorage.getItem('authToken'));
         setUserImgUrl(fullImageUrl);
+        if (fullUserName && typeof fullUserName === 'string') {
+          setUserName(fullUserName.toLocaleUpperCase());
+        } else {
+          console.error('Invalid username');
+        }
   
         toggleLoginForm();
+        console.log(fullUserName);
+        console.log(fullImageUrl);
       } else {
         console.error('Login failed');
         setLoginError('Invalid credentials. Please try again.');
@@ -161,10 +170,17 @@ export default function Login(props) {
       // User is logged in, retrieve user data and profile picture URL from localStorage
       const userData = JSON.parse(localStorage.getItem('userData'));
       const userImgUrl = localStorage.getItem('userImgUrl');
+      const userName = localStorage.getItem('userName');
   
       // Set the user data and profile picture URL in the component state
       setLogin(authToken);
       setUserImgUrl(userImgUrl);
+      if (userName && typeof userName === 'string') {
+        setUserName(userName.toLocaleUpperCase());
+      } else {
+        console.error('Invalid username');
+      }
+      
     }
   
     // Fetch countries (your existing code for fetching countries)
@@ -189,7 +205,7 @@ export default function Login(props) {
     try {
       // Destructure accessToken and userID from Facebook response
       const { accessToken, userID } = response;
-  
+
       // Make a POST request to the Facebook login endpoint
       const res = await axios.post(`${apiUrl}/api/facebook-login/`, {
         access_token: accessToken,
@@ -200,7 +216,7 @@ export default function Login(props) {
           'X-CSRFToken': getCSRFToken(), // Implement getCSRFToken function to retrieve the CSRF token
         },
       });
-  
+
       // Check the status of the response
       if (res.status === 200) {
         const data = res.data;
@@ -265,17 +281,11 @@ export default function Login(props) {
           </div>
           <button type="submit" className="btn login-submit btn-primary btn-block mb-4">Sign up</button>
         </form>
-
+        <Facebook />
         <div className="col login " onClick={toggleSingUp}>
           <a href="#!">Have you an account?</a>
         </div>
-        <FacebookLogin
-                  appId="327231606751159"
-                  autoLoad={false}
-                  fields="name,email,picture"
-                  callback={responseFacebook}
-                  icon={<i className="fab fa-facebook-square"></i>}
-                />
+     
       </div>
     );
   }
@@ -310,7 +320,7 @@ export default function Login(props) {
         <Box sx={{ flexGrow: 0 }}>
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-            {userImgUrl && <Avatar alt="Remy Sharp" src={userImgUrl}  />}
+            {userImgUrl && <Avatar alt={userName} src={userImgUrl}  />}
             </IconButton>
           </Tooltip>
           <Menu
