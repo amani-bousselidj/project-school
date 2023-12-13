@@ -201,42 +201,42 @@ export default function Login(props) {
     // Call the fetchCountries function
     fetchCountries();
   }, [apiUrl]);
-  const responseFacebook = async (response) => {
-    try {
-      // Destructure accessToken and userID from Facebook response
-      const { accessToken, userID } = response;
+  // const responseFacebook = async (response) => {
+  //   try {
+  //     // Destructure accessToken and userID from Facebook response
+  //     const { accessToken, userID } = response;
 
-      // Make a POST request to the Facebook login endpoint
-      const res = await axios.post(`${apiUrl}/api/facebook-login/`, {
-        access_token: accessToken,
-        user_id: userID,
-      }, {
-        // Include CSRF token in the headers
-        headers: {
-          'X-CSRFToken': getCSRFToken(), // Implement getCSRFToken function to retrieve the CSRF token
-        },
-      });
+  //     // Make a POST request to the Facebook login endpoint
+  //     const res = await axios.post(`${apiUrl}/api/facebook-login/`, {
+  //       access_token: accessToken,
+  //       user_id: userID,
+  //     }, {
+  //       // Include CSRF token in the headers
+  //       headers: {
+  //         'X-CSRFToken': getCSRFToken(), // Implement getCSRFToken function to retrieve the CSRF token
+  //       },
+  //     });
 
-      // Check the status of the response
-      if (res.status === 200) {
-        const data = res.data;
-        // Handle successful social login
-        handleSocialLogin(data);
-      } else {
-        console.error('Facebook login failed');
-        setLoginError('Facebook login failed. Please try again.');
-      }
-    } catch (error) {
-      console.error('Facebook login failed', error);
-      setLoginError('An error occurred during Facebook login.');
-    }
-  };
+  //     // Check the status of the response
+  //     if (res.status === 200) {
+  //       const data = res.data;
+  //       // Handle successful social login
+  //       handleSocialLogin(data);
+  //     } else {
+  //       console.error('Facebook login failed');
+  //       setLoginError('Facebook login failed. Please try again.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Facebook login failed', error);
+  //     setLoginError('An error occurred during Facebook login.');
+  //   }
+  // };
   
-  // Function to retrieve the CSRF token from cookies
-  const getCSRFToken = () => {
-    const csrfToken = document.cookie.match(/csrftoken=([\w-]+)/);
-    return csrfToken ? csrfToken[1] : '';
-  };
+  // // Function to retrieve the CSRF token from cookies
+  // const getCSRFToken = () => {
+  //   const csrfToken = document.cookie.match(/csrftoken=([\w-]+)/);
+  //   return csrfToken ? csrfToken[1] : '';
+  // };
   
   
   function SignUpForm() {
